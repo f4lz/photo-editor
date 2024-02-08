@@ -1,0 +1,50 @@
+@import './colors.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-inter text-primary text-sm md:text-base lg:text-lg;
+  }
+
+  h1 {
+    @apply text-5xl font-montserrat font-semibold;
+  }
+
+  h2 {
+    @apply text-4xl font-semibold font-montserrat;
+  }
+
+  h3 {
+    @apply text-3xl font-semibold font-montserrat;
+  }
+
+  h4 {
+    @apply text-2xl font-semibold font-montserrat;
+  }
+
+  h5 {
+    @apply text-xl font-semibold;
+  }
+
+  h6 {
+    @apply text-base md:text-lg font-semibold;
+  }
+
+  span {
+    @apply text-sm;
+  }
+
+  input {
+    @apply text-sm border-2 rounded-md p-2;
+  }
+}
+
+@layer components {
+  .button {
+   
+  }
+  .
+}
