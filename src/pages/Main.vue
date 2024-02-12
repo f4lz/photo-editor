@@ -1,6 +1,8 @@
 <script lang="ts" setup>
+import AddPhoto from '@/components/AddPhoto.vue';
+
 </script>
 
 <template>
-  <h1>Main page</h1>
+  <AddPhoto/>
 </template>
