@@ -15,16 +15,16 @@ const image: HTMLImageElement = new Image()
 const x: Ref<Number | undefined> = ref()
 const y: Ref<Number | undefined> = ref()
 
+/** Генерация фото из файла */
+const generateFileToImg = (file: File) => {
+  const imageUrl = URL.createObjectURL(file)
+  image.src = imageUrl
+}
+
 //TODO: изменить тип аргумента - `event`
 const onChangeImg = (event: any) => {
   const e = event.target
-  if (e.files) {
-    const file = e.files[0]
-    const imageUrl = URL.createObjectURL(file)
-    image.src = imageUrl
-  } else {
-    image.src = e.value
-  }
+  e.files ? generateFileToImg(e.files[0]) : (image.src = e.value)
   onRenderImg()
 }
 
@@ -36,15 +36,26 @@ onMounted(() => {
 /** Отрисовка изображения */
 const onRenderImg = () => {
   image.onload = () => {
-    ctx.value && canvasElement.value
-      ? (ctx.value.clearRect(
+    if (ctx.value && canvasElement.value) {
+      canvasElement.value.width = image.width
+      canvasElement.value.height = image.height
+
+      ctx.value.clearRect(
+        0,
+        0,
+        canvasElement.value.width,
+        canvasElement.value.height
+      ),
+        ctx.value.drawImage(
+          image,
           0,
           0,
           canvasElement.value.width,
           canvasElement.value.height
-        ),
-        ctx.value.drawImage(image, 0, 0))
-      : console.error('Ошибка контекста или элемента страницы')
+        )
+      return
+    }
+    console.error('Ошибка контекста или элемента страницы')
   }
 }
 
@@ -56,11 +67,7 @@ const showImgDetailsInfo = (event: any) => {
 </script>
 
 <template>
-  <canvas
-    ref="canvasElement"
-    height="500"
-    width="500"
-    @mousemove="showImgDetailsInfo" />
+  <canvas ref="canvasElement" @mousemove="showImgDetailsInfo" />
   <div>X {{ x }} Y {{ y }}</div>
   <div>
     Загрузить фото
