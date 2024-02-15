@@ -5,15 +5,20 @@ import { onMounted, ref } from 'vue'
 /** `canvas` элемент для отрисовки и работы с изображением */
 const canvasElement: Ref<HTMLCanvasElement | undefined> = ref()
 
+/** `color` элемент */
+const colorElement: Ref<HTMLDivElement | undefined> = ref()
+
 /** Контекст `canvas` */
 const ctx: Ref<CanvasRenderingContext2D | undefined> = ref()
 
 /** Фотография для обработки */
 const image: HTMLImageElement = new Image()
 
+image.crossOrigin = 'Anonymous'
+
 /** Координаты мыши */
-const x: Ref<Number | undefined> = ref()
-const y: Ref<Number | undefined> = ref()
+const x: any = ref()
+const y: any = ref()
 
 /** Генерация фото из файла */
 const generateFileToImg = (file: File) => {
@@ -61,14 +66,23 @@ const onRenderImg = () => {
 
 //TODO: изменить тип аргумента - `event`
 const showImgDetailsInfo = (event: any) => {
-  x.value = event.x
-  y.value = event.y
+  x.value = event.layerX
+  y.value = event.layerY
+
+  if (colorElement.value && x.value && y.value && ctx.value) {
+    const pixel = ctx.value.getImageData(x.value, y.value, 1, 1)
+    const data = pixel.data
+    const rgba = `rgba(${data[0]}, ${data[1]}, ${data[2]}, ${data[3] / 255})`
+    colorElement.value.style.background = rgba
+    colorElement.value.textContent = rgba
+  }
 }
 </script>
 
 <template>
   <canvas ref="canvasElement" @mousemove="showImgDetailsInfo" />
   <div>X {{ x }} Y {{ y }}</div>
+  <div ref="colorElement"></div>
   <div>
     Загрузить фото
     <input type="file" @change="onChangeImg" />
