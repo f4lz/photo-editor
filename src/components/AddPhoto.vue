@@ -1,9 +1,13 @@
 <script lang="ts" setup>
+import { useElementHover } from '@vueuse/core'
 import type { Ref } from 'vue'
 import { onMounted, ref } from 'vue'
 
 /** `canvas` элемент для отрисовки и работы с изображением */
 const canvasElement: Ref<HTMLCanvasElement | undefined> = ref()
+
+/** Наведен ли курсор на `canvas`  */
+const isHovered = useElementHover(canvasElement)
 
 /** `color` элемент */
 const colorElement: Ref<HTMLDivElement | undefined> = ref()
@@ -20,8 +24,8 @@ const image: HTMLImageElement = new Image()
 image.crossOrigin = 'Anonymous'
 
 /** Координаты мыши */
-const x: any = ref()
-const y: any = ref()
+const x: any = ref(0)
+const y: any = ref(0)
 
 /** Генерация фото из файла */
 const generateFileToImg = (file: File) => {
@@ -37,7 +41,10 @@ const onChangeImg = (event: any) => {
 }
 
 onMounted(() => {
-  ctx.value = canvasElement.value?.getContext('2d') || undefined
+  // window.addEventListener('scroll', hello)
+  ctx.value =
+    canvasElement.value?.getContext('2d', { willReadFrequently: true }) ||
+    undefined
   onRenderImg()
 })
 
@@ -73,6 +80,8 @@ const showImgDetailsInfo = (event: any) => {
   y.value = event.layerY
 
   if (colorElement.value && x.value && y.value && ctx.value) {
+    colorElement.value.style.top = `${event.pageY + 30}px`
+    colorElement.value.style.left = `${event.pageX - 10}px`
     const pixel = ctx.value.getImageData(x.value, y.value, 1, 1)
     const data = pixel.data
     const rgba = `rgba(${data[0]}, ${data[1]}, ${data[2]}, ${data[3] / 255})`
@@ -80,31 +89,33 @@ const showImgDetailsInfo = (event: any) => {
   }
 
   if (coordinates.value) {
-    coordinates.value.style.top = `${y.value - 10}px`
-    coordinates.value.style.left = `${x.value + 20}px`
+    coordinates.value.style.top = `${event.pageY - 10}px`
+    coordinates.value.style.left = `${event.pageX + 20}px`
   }
 }
 </script>
 
 <template>
-  <canvas
-    ref="canvasElement"
-    class="relative"
-    @mousemove="showImgDetailsInfo" />
-  <div ref="coordinates" class="absolute flex flex-col">
-    <p class="stroke-text text-xl text-white">x {{ x }}</p>
-    <p class="stroke-text text-white text-xl">y {{ y }}</p>
-  </div>
-  <div ref="colorElement" class="w-6 h-6" />
-  <div>
-    Загрузить фото
-    <input type="file" @change="onChangeImg" />
-    <input placeholder="Ссылка на фото" type="text" @change="onChangeImg" />
+  <div class="grid place-items-center mt-40">
+    <canvas
+      ref="canvasElement"
+      class="relative grow-0"
+      @mousemove="showImgDetailsInfo" />
+
+    <div
+      v-if="isHovered"
+      ref="coordinates"
+      class="absolute bg-black/40 rounded-lg px-2 py-1 flex flex-col">
+      <p class="text-sm text-white">x-{{ x }}px</p>
+      <p class="text-white text-sm">y-{{ y }}px</p>
+    </div>
+
+    <div v-if="isHovered" ref="colorElement" class="absolute border w-6 h-6" />
+
+    <div>
+      Загрузить фото
+      <input type="file" @change="onChangeImg" />
+      <input placeholder="Ссылка на фото" type="text" @change="onChangeImg" />
+    </div>
   </div>
 </template>
-
-<style>
-.stroke-text {
-  -webkit-text-stroke: 0.3px #000; /* Толщина и цвет обводки */
-}
-</style>

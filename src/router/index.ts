@@ -1,5 +1,5 @@
-import Main from '@pages/Main.vue'
 import { createRouter, createWebHistory } from 'vue-router'
+import Main from '../pages/Main.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -7,14 +7,14 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: Main
+      component: Main,
     },
     {
       name: 'NotFound',
       path: '/:pathMatch(.*)*',
       component: Main,
     },
-  ]
+  ],
 })
 
 export default router
