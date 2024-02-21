@@ -1,8 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   plugins: [],
-  content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
-  darkMode: false, // or 'media' or 'class'
+  purge: ['./src/**/*.html', './src/**/*.vue', './src/**/*.jsx'],
+  darkMode: false,
   theme: {
     container: {
       center: true,

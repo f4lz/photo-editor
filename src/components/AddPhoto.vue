@@ -11,6 +11,9 @@ const colorElement: Ref<HTMLDivElement | undefined> = ref()
 /** Контекст `canvas` */
 const ctx: Ref<CanvasRenderingContext2D | undefined> = ref()
 
+/** Координаты курсора */
+const coordinates: Ref<HTMLDivElement | undefined> = ref()
+
 /** Фотография для обработки */
 const image: HTMLImageElement = new Image()
 
@@ -74,18 +77,34 @@ const showImgDetailsInfo = (event: any) => {
     const data = pixel.data
     const rgba = `rgba(${data[0]}, ${data[1]}, ${data[2]}, ${data[3] / 255})`
     colorElement.value.style.background = rgba
-    colorElement.value.textContent = rgba
+  }
+
+  if (coordinates.value) {
+    coordinates.value.style.top = `${y.value - 10}px`
+    coordinates.value.style.left = `${x.value + 20}px`
   }
 }
 </script>
 
 <template>
-  <canvas ref="canvasElement" @mousemove="showImgDetailsInfo" />
-  <div>X {{ x }} Y {{ y }}</div>
-  <div ref="colorElement"></div>
+  <canvas
+    ref="canvasElement"
+    class="relative"
+    @mousemove="showImgDetailsInfo" />
+  <div ref="coordinates" class="absolute flex flex-col">
+    <p class="stroke-text text-xl text-white">x {{ x }}</p>
+    <p class="stroke-text text-white text-xl">y {{ y }}</p>
+  </div>
+  <div ref="colorElement" class="w-6 h-6" />
   <div>
     Загрузить фото
     <input type="file" @change="onChangeImg" />
     <input placeholder="Ссылка на фото" type="text" @change="onChangeImg" />
   </div>
 </template>
+
+<style>
+.stroke-text {
+  -webkit-text-stroke: 0.3px #000; /* Толщина и цвет обводки */
+}
+</style>
