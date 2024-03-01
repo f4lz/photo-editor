@@ -52,8 +52,8 @@ onMounted(() => {
 const onRenderImg = () => {
   image.onload = () => {
     if (ctx.value && canvasElement.value) {
-      canvasElement.value.width = image.width
-      canvasElement.value.height = image.height
+      canvasElement.value.width = window.innerWidth
+      canvasElement.value.height = window.innerHeight
 
       ctx.value.clearRect(
         0,
@@ -96,21 +96,24 @@ const showImgDetailsInfo = (event: any) => {
 </script>
 
 <template>
-  <div class="grid place-items-center mt-40">
+  <div class="grid place-items-center">
     <canvas
       ref="canvasElement"
       class="relative grow-0"
       @mousemove="showImgDetailsInfo" />
 
     <div
-      v-if="isHovered"
+      v-show="isHovered"
       ref="coordinates"
       class="absolute bg-black/40 rounded-lg px-2 py-1 flex flex-col">
       <p class="text-sm text-white">x-{{ x }}px</p>
       <p class="text-white text-sm">y-{{ y }}px</p>
     </div>
 
-    <div v-if="isHovered" ref="colorElement" class="absolute border w-6 h-6" />
+    <div
+      v-show="isHovered"
+      ref="colorElement"
+      class="absolute border w-6 h-6" />
 
     <div>
       Загрузить фото
