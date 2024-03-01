@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { useElementHover } from '@vueuse/core'
-import type { Ref } from 'vue'
-import { onMounted, ref } from 'vue'
+import { useElementHover } from '@vueuse/core';
+import type { Ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 /** `canvas` элемент для отрисовки и работы с изображением */
 const canvasElement: Ref<HTMLCanvasElement | undefined> = ref()
@@ -41,7 +41,6 @@ const onChangeImg = (event: any) => {
 }
 
 onMounted(() => {
-  // window.addEventListener('scroll', hello)
   ctx.value =
     canvasElement.value?.getContext('2d', { willReadFrequently: true }) ||
     undefined
@@ -74,10 +73,9 @@ const onRenderImg = () => {
   }
 }
 
-//TODO: изменить тип аргумента - `event`
-const showImgDetailsInfo = (event: any) => {
-  x.value = event.layerX
-  y.value = event.layerY
+const showImgDetailsInfo = (event: MouseEvent) => {
+  x.value = event.offsetX
+  y.value = event.offsetY
 
   if (colorElement.value && x.value && y.value && ctx.value) {
     colorElement.value.style.top = `${event.pageY + 30}px`
