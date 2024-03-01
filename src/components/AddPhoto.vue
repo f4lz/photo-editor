@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { useElementHover } from '@vueuse/core';
-import type { Ref } from 'vue';
-import { onMounted, ref } from 'vue';
+import { useElementHover } from '@vueuse/core'
+import type { Ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 /** `canvas` элемент для отрисовки и работы с изображением */
 const canvasElement: Ref<HTMLCanvasElement | undefined> = ref()
@@ -33,10 +33,11 @@ const generateFileToImg = (file: File) => {
   image.src = imageUrl
 }
 
-//TODO: изменить тип аргумента - `event`
-const onChangeImg = (event: any) => {
+const onChangeImg = (event: Event) => {
   const e = event.target
-  e.files ? generateFileToImg(e.files[0]) : (image.src = e.value)
+  if (e instanceof HTMLInputElement) {
+    e.files ? generateFileToImg(e.files[0]) : (image.src = e.value)
+  }
   onRenderImg()
 }
 
